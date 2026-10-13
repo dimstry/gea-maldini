@@ -2,6 +2,7 @@
 
 import Image, { type StaticImageData } from "next/image";
 import { useEffect, useRef, useState, useTransition } from "react";
+import { createPortal } from "react-dom";
 import { kirimUcapan } from "./actions";
 import { HADIR, MAX_NAMA, MAX_UCAPAN, type Kehadiran, type Wish } from "./wishes";
 import couple1 from "../public/images/couple1.jpeg";
@@ -268,6 +269,13 @@ const FOTO = [couple1, couple2];
 
 export function Galeri() {
   const [lb, setLb] = useState(-1);
+  // kunci scroll halaman di belakang selama foto diperbesar
+  useEffect(() => {
+    if (lb < 0) return;
+    document.documentElement.style.overflow = "hidden";
+    return () => void (document.documentElement.style.overflow = "");
+  }, [lb]);
+
   return (
     <>
       <div data-stagger className="flex w-full flex-col gap-3">
@@ -277,20 +285,24 @@ export function Galeri() {
           </button>
         ))}
       </div>
-      {lb >= 0 && (
+      {/* portal ke <body>: elemen induk yang punya animasi transform membuat `fixed` ikut induk, bukan layar */}
+      {lb >= 0 &&
+        createPortal(
         <div
           role="dialog"
           aria-modal="true"
           aria-label="Foto diperbesar"
           onKeyDown={(e) => e.key === "Escape" && setLb(-1)}
+          onClick={(e) => e.target === e.currentTarget && setLb(-1)}
           className="fixed inset-0 z-50 box-border flex flex-col items-center justify-center gap-4 bg-[rgba(10,18,14,0.92)] p-6"
         >
           <Image src={FOTO[lb]} alt="Foto Gea dan Maldini" className="block h-auto max-h-[78vh] w-auto max-w-full rounded-xl" />
           <button type="button" autoFocus onClick={() => setLb(-1)} className="min-h-[46px] cursor-pointer rounded-full border border-emas-muda bg-transparent px-[26px] font-sans text-sm text-krem">
             Tutup
           </button>
-        </div>
-      )}
+        </div>,
+          document.body,
+        )}
     </>
   );
 }
