@@ -31,7 +31,7 @@ export function MegaDefs() {
 
 export function MegaFill({ opacity }: { opacity: number }) {
   return (
-    <svg aria-hidden="true" className="absolute inset-0 h-full w-full" style={{ opacity }}>
+    <svg aria-hidden="true" className="animate-pan absolute inset-y-0 -left-[120px] h-full w-[calc(100%+120px)]" style={{ opacity }}>
       <rect width="100%" height="100%" fill="url(#mega)" />
     </svg>
   );
@@ -88,11 +88,51 @@ export function Arch({ src, alt, w, h, pos }: { src: string | StaticImageData; a
   );
 }
 
+// Posisi/durasi tetap (bukan Math.random) supaya HTML server & browser sama.
+const PETALS = [
+  [6, 15, 0, 12], [20, 18, -9, 10], [35, 16, -4, 13], [50, 19, -13, 11],
+  [64, 17, -7, 12], [79, 18, -2, 10], [93, 16, -11, 11],
+];
+
+/** Kelopak melati berjatuhan pelan. */
+function Petals() {
+  return (
+    <div aria-hidden="true" className="pointer-events-none fixed inset-0 z-[45] mx-auto max-w-[480px] overflow-hidden">
+      {PETALS.map(([left, dur, delay, size], i) => (
+        <span key={i} className="animate-fall absolute -top-8 block" style={{ left: `${left}%`, animationDuration: `${dur}s`, animationDelay: `${delay}s` }}>
+          <svg className="animate-sway block" style={{ animationDuration: `${3 + (i % 3)}s` }} width={size} height={size * 1.4} viewBox="0 0 10 14">
+            <path d="M5 0C8.5 3 9.5 8 5 14C0.5 8 1.5 3 5 0Z" fill="#FFFDF4" stroke="#D4B76E" strokeWidth="0.6" opacity="0.9" />
+            <path d="M5 2V12" stroke="#E6CB86" strokeWidth="0.5" opacity="0.6" />
+          </svg>
+        </span>
+      ))}
+    </div>
+  );
+}
+
 /** Sampul layar penuh; setelah "Buka Undangan" sampul memudar dan isi undangan tampil. */
 export function Gate({ tamu, children }: { tamu: string; children: React.ReactNode }) {
   const [stage, setStage] = useState<"cover" | "closing" | "open">("cover");
   const [playing, setPlaying] = useState(false);
   const audio = useRef<HTMLAudioElement>(null);
+
+  // Bagian undangan muncul bergantian saat masuk layar. Kelas `rv` dipasang lewat JS,
+  // jadi tanpa JS (atau sebelum dibuka) semua konten tetap terlihat.
+  const opened = stage !== "cover";
+  useEffect(() => {
+    if (!opened) return;
+    const els = new Set<HTMLElement>(document.querySelectorAll('.isi section > :not(svg, [role="dialog"]), .isi [data-stagger] > *, .isi [data-rv]'));
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach((e) => e.isIntersecting && (e.target.classList.add("in"), io.unobserve(e.target))),
+      { rootMargin: "0px 0px -8% 0px" },
+    );
+    els.forEach((el) => {
+      if (el.parentElement?.hasAttribute("data-stagger")) el.style.transitionDelay = `${Math.min([...el.parentElement.children].indexOf(el), 6) * 110}ms`;
+      el.classList.add("rv");
+      io.observe(el);
+    });
+    return () => io.disconnect();
+  }, [opened]);
 
   function buka() {
     // play() langsung di handler klik supaya tidak diblokir autoplay browser
@@ -128,7 +168,7 @@ export function Gate({ tamu, children }: { tamu: string; children: React.ReactNo
                 <span className="relative font-script text-[96px] leading-[0.95] text-krem">M</span>
               </div>
             </Frame>
-            <h1 className="mt-2 font-script text-[58px] font-normal leading-none text-krem">
+            <h1 className="shimmer mt-2 px-4 py-1 font-script text-[58px] font-normal leading-none">
               Gea <span className="text-[40px] text-emas-muda">&amp;</span> Maldini
             </h1>
             <p className="m-0 font-serif text-[19px] tracking-[0.14em] text-[#E9DFC9]">Sabtu · 24 · 10 · 2026</p>
@@ -148,6 +188,7 @@ export function Gate({ tamu, children }: { tamu: string; children: React.ReactNo
         </section>
       )}
       <div hidden={stage === "cover"} className={`isi ${stage === "cover" ? "" : "animate-rise"}`}>{children}</div>
+      <Petals />
 
       {/* lagu latar: ganti file public/audio/lagu.mp3 untuk mengganti lagu */}
       <audio ref={audio} src="/audio/lagu.mp3" loop preload="none" onPlay={() => setPlaying(true)} onPause={() => setPlaying(false)} />
@@ -158,6 +199,7 @@ export function Gate({ tamu, children }: { tamu: string; children: React.ReactNo
           aria-label={playing ? "Jeda musik" : "Putar musik"}
           className="fixed bottom-5 right-[max(20px,calc(50%-220px))] z-30 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-emas-muda/60 bg-hijau-tua text-emas-muda shadow-[0_6px_20px_rgba(0,0,0,0.35)]"
         >
+          {playing && <span aria-hidden="true" className="absolute inset-0 animate-[ping_2.4s_cubic-bezier(0,0,0.2,1)_infinite] rounded-full border border-emas-muda/70" />}
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true" className={playing ? "animate-[spin_6s_linear_infinite]" : "opacity-60"}>
             <path d="M9 18V5l11-2v13" />
             <circle cx="6" cy="18" r="3" />
@@ -188,10 +230,10 @@ export function Countdown() {
     [pad(Math.floor((diff % 60000) / 1000)), "DETIK"],
   ];
   return (
-    <div className="grid w-full max-w-[360px] grid-cols-4 gap-2.5">
+    <div data-stagger className="grid w-full max-w-[360px] grid-cols-4 gap-2.5">
       {items.map(([v, label]) => (
-        <div key={label} className="rounded-[10px] border border-emas-muda/50 bg-[rgba(15,30,24,0.4)] px-1 py-3.5">
-          <div className="font-serif text-4xl font-semibold leading-none">{v}</div>
+        <div key={label} data-rv="zoom" className="overflow-hidden rounded-[10px] border border-emas-muda/50 bg-[rgba(15,30,24,0.4)] px-1 py-3.5">
+          <div key={v} className="animate-tick font-serif text-4xl font-semibold leading-none">{v}</div>
           <div className="mt-1.5 text-[11px] tracking-[0.1em] text-emas-muda">{label}</div>
         </div>
       ))}
@@ -228,10 +270,10 @@ export function Galeri() {
   const [lb, setLb] = useState(-1);
   return (
     <>
-      <div className="flex w-full flex-col gap-3">
+      <div data-stagger className="flex w-full flex-col gap-3">
         {FOTO.map((src, i) => (
-          <button key={i} type="button" onClick={() => setLb(i)} aria-label={`Perbesar foto ${i + 1}`} className="relative block h-[220px] w-full cursor-zoom-in overflow-hidden rounded-[14px] border-0 bg-transparent p-0">
-            <Image src={src} alt="" fill sizes="432px" className="object-cover" />
+          <button key={i} type="button" onClick={() => setLb(i)} aria-label={`Perbesar foto ${i + 1}`} data-rv="zoom" className="group relative block h-[220px] w-full cursor-zoom-in overflow-hidden rounded-[14px] border-0 bg-transparent p-0">
+            <Image src={src} alt="" fill sizes="432px" className="object-cover transition-transform duration-700 group-hover:scale-105" />
           </button>
         ))}
       </div>
@@ -266,6 +308,7 @@ export function Rsvp({ initial }: { initial: Wish[] }) {
   const [err, setErr] = useState("");
   const [terkirim, setTerkirim] = useState(false);
   const [pending, startTransition] = useTransition();
+  const [semua, setSemua] = useState(false);
 
   function kirim(e: React.FormEvent) {
     e.preventDefault();
@@ -340,7 +383,7 @@ export function Rsvp({ initial }: { initial: Wish[] }) {
         {wishes.length === 0 && (
           <div className="rounded-xl border border-dashed border-input p-[22px] text-center text-[13px] text-redup">Belum ada ucapan. Jadilah yang pertama mengirim doa.</div>
         )}
-        {wishes.map((w) => (
+        {(semua ? wishes : wishes.slice(0, 5)).map((w) => (
           <div key={w.id} className="flex flex-col gap-1.5 rounded-xl border border-[#DDD0AF] bg-[#FBF8F1] p-4">
             <div className="flex items-center justify-between gap-2">
               {/* semua isi ucapan dirender sebagai teks biasa (React meng-escape HTML) — jangan pakai dangerouslySetInnerHTML */}
@@ -352,6 +395,11 @@ export function Rsvp({ initial }: { initial: Wish[] }) {
             <p className="m-0 whitespace-pre-line break-words text-sm leading-[1.6] text-teks-2">{w.ucapan}</p>
           </div>
         ))}
+        {wishes.length > 5 && (
+          <button type="button" onClick={() => setSemua(!semua)} aria-expanded={semua} className="mx-auto mt-1 min-h-11 cursor-pointer rounded-full border border-hijau-tua bg-transparent px-6 font-sans text-[13px] tracking-[0.06em] text-hijau-tua">
+            {semua ? "Tampilkan lebih sedikit" : `Lihat semua ucapan (${wishes.length})`}
+          </button>
+        )}
       </div>
     </>
   );

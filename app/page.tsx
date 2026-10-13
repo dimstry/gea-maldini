@@ -48,8 +48,8 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ t
           <section className="flex flex-col items-center gap-[26px] px-8 pb-20 pt-2 text-center">
             {MEMPELAI.map((m, i) => (
               <Fragment key={m.nama}>
-                {i === 1 && <p className="m-0 font-script text-[54px] leading-none text-rose">&amp;</p>}
-                <div className="flex flex-col items-center gap-3.5">
+                {i === 1 && <p data-rv="zoom" className="m-0 font-script text-[54px] leading-none text-rose">&amp;</p>}
+                <div data-rv={i === 0 ? "left" : "right"} className="flex flex-col items-center gap-3.5">
                   <Arch src={m.src} alt={m.nama} w={200} h={260} pos="50% 30%" />
                   <h2 className="mb-0 mt-1.5 font-script text-[44px] font-normal leading-[1.05] text-hijau-tua">{m.nama}</h2>
                   <p className="m-0 text-sm leading-[1.7] text-teks-2">
@@ -85,7 +85,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ t
           <section className="flex flex-col items-center gap-[22px] px-6 pb-14 pt-20 text-center">
             <p className={`${label} text-coklat-emas`}>Waktu &amp; Tempat</p>
             <h2 className="m-0 font-serif text-[34px] font-medium text-hijau-tua">Rangkaian Acara</h2>
-            <div className="flex w-full flex-col gap-3.5">
+            <div data-stagger className="flex w-full flex-col gap-3.5">
               {ACARA.map(([nama, jam]) => (
                 <div key={nama} className="flex flex-col items-center gap-2.5 rounded-[18px] border border-garis bg-krem-tua px-[22px] py-7">
                   <p className="m-0 font-script text-[40px] leading-none text-hijau-tua">{nama}</p>
@@ -137,7 +137,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ t
               </p>
               <p className="m-0 font-serif text-lg italic text-[#E9DFC9]">Wassalamu’alaikum Warahmatullahi Wabarakatuh</p>
               <p className="mb-0 mt-2.5 text-[13px] text-[#D8CDB3]">Kami yang berbahagia,</p>
-              <p className="m-0 font-script text-[52px] leading-none text-krem">Gea &amp; Maldini</p>
+              <p className="shimmer m-0 px-4 py-1 font-script text-[52px] leading-none">Gea &amp; Maldini</p>
               <p className="m-0 text-[13px] leading-[1.8] text-[#D8CDB3]">
                 Keluarga Besar Bapak Usep &amp; Ibu Cucu
                 <br />
