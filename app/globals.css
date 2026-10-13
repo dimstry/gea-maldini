@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-hijau-tua: #1f3a30;
-  --color-hijau-gelap: #16291f;
+  --color-biru-tua: #1b3358;
+  --color-biru-gelap: #0f1f38;
   --color-emas: #c8a24e;
   --color-emas-muda: #e6cb86;
   --color-krem: #f4eee3;
@@ -42,7 +42,7 @@
 
 @layer base {
   html { scroll-behavior: smooth }
-  body { margin: 0; background: #16291f }
+  body { margin: 0; background: #0f1f38 }
   a { color: #7a5a1e }
   a:hover { color: #4f3a12 }
   input:focus, textarea:focus, select:focus { outline: 2px solid #c8a24e; outline-offset: 1px }

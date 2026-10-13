@@ -1,12 +1,9 @@
 "use client";
 
-import Image, { type StaticImageData } from "next/image";
+import Image from "next/image";
 import { useEffect, useRef, useState, useTransition } from "react";
-import { createPortal } from "react-dom";
 import { kirimUcapan } from "./actions";
 import { HADIR, MAX_NAMA, MAX_UCAPAN, type Kehadiran, type Wish } from "./wishes";
-import couple1 from "../public/images/couple1.jpeg";
-import couple2 from "../public/images/couple2.jpeg";
 
 const CLOUD = [
   "M8 52 C6 38 22 30 34 36 C38 22 58 18 68 30 C78 20 98 24 100 40 C112 40 118 50 112 58 Z",
@@ -81,7 +78,7 @@ export function Frame({ w, h, bg, children }: { w: number; h: number; bg: string
 }
 
 /** Foto dalam bingkai lengkung emas. */
-export function Arch({ src, alt, w, h, pos }: { src: string | StaticImageData; alt: string; w: number; h: number; pos: string }) {
+export function Arch({ src, alt, w, h, pos }: { src: string; alt: string; w: number; h: number; pos: string }) {
   return (
     <Frame w={w} h={h} bg="#F4EEE3">
       <Image src={src} alt={alt} fill sizes={`${w}px`} className="object-cover" style={{ objectPosition: pos }} />
@@ -148,7 +145,7 @@ export function Gate({ tamu, children }: { tamu: string; children: React.ReactNo
     <>
       {stage !== "open" && (
         <section
-          className={`fixed inset-0 z-40 mx-auto box-border flex max-w-[480px] flex-col items-center overflow-y-auto overflow-x-hidden bg-hijau-tua px-7 py-[60px] text-center text-krem ${stage === "closing" ? "animate-cover-out pointer-events-none" : ""}`}
+          className={`fixed inset-0 z-40 mx-auto box-border flex max-w-[480px] flex-col items-center overflow-y-auto overflow-x-hidden bg-biru-tua px-7 py-[60px] text-center text-krem ${stage === "closing" ? "animate-cover-out pointer-events-none" : ""}`}
         >
           <MegaFill opacity={0.16} />
           <Cloud className="animate-drift left-[-60px] top-[30px]" />
@@ -159,8 +156,8 @@ export function Gate({ tamu, children }: { tamu: string; children: React.ReactNo
           <div className="cover-isi animate-rise relative my-auto flex flex-col items-center gap-4">
             <Siger className="animate-glow" width={104} height={58} />
             <p className="m-0 text-xs uppercase tracking-[0.32em] text-emas-muda">Undangan Pernikahan</p>
-            <Frame w={230} h={290} bg="#1F3A30">
-              <div role="img" aria-label="Inisial G dan M" className="relative flex h-full w-full flex-col items-center justify-center bg-[rgba(15,30,24,0.45)]">
+            <Frame w={230} h={290} bg="#1B3358">
+              <div role="img" aria-label="Inisial G dan M" className="relative flex h-full w-full flex-col items-center justify-center bg-[rgba(10,22,44,0.45)]">
                 <MegaFill opacity={0.22} />
                 <span className="relative font-script text-[96px] leading-[0.95] text-krem">G</span>
                 <span className="relative my-1 flex items-center gap-3 font-script text-[34px] leading-none text-emas-muda">
@@ -180,7 +177,7 @@ export function Gate({ tamu, children }: { tamu: string; children: React.ReactNo
             <button
               type="button"
               onClick={buka}
-              className="mt-3.5 inline-flex min-h-12 cursor-pointer items-center gap-2.5 rounded-full border-0 bg-emas px-7 font-sans text-sm font-medium tracking-[0.08em] text-hijau-tua transition-transform active:scale-95"
+              className="mt-3.5 inline-flex min-h-12 cursor-pointer items-center gap-2.5 rounded-full border-0 bg-emas px-7 font-sans text-sm font-medium tracking-[0.08em] text-biru-tua transition-transform active:scale-95"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" /><path d="M3 7l9 6 9-6" /></svg>
               Buka Undangan
@@ -198,7 +195,7 @@ export function Gate({ tamu, children }: { tamu: string; children: React.ReactNo
           type="button"
           onClick={() => (audio.current?.paused ? audio.current.play().catch(() => {}) : audio.current?.pause())}
           aria-label={playing ? "Jeda musik" : "Putar musik"}
-          className="fixed bottom-5 right-[max(20px,calc(50%-220px))] z-30 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-emas-muda/60 bg-hijau-tua text-emas-muda shadow-[0_6px_20px_rgba(0,0,0,0.35)]"
+          className="fixed bottom-5 right-[max(20px,calc(50%-220px))] z-30 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full border border-emas-muda/60 bg-biru-tua text-emas-muda shadow-[0_6px_20px_rgba(0,0,0,0.35)]"
         >
           {playing && <span aria-hidden="true" className="absolute inset-0 animate-[ping_2.4s_cubic-bezier(0,0,0.2,1)_infinite] rounded-full border border-emas-muda/70" />}
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true" className={playing ? "animate-[spin_6s_linear_infinite]" : "opacity-60"}>
@@ -233,7 +230,7 @@ export function Countdown() {
   return (
     <div data-stagger className="grid w-full max-w-[360px] grid-cols-4 gap-2.5">
       {items.map(([v, label]) => (
-        <div key={label} data-rv="zoom" className="overflow-hidden rounded-[10px] border border-emas-muda/50 bg-[rgba(15,30,24,0.4)] px-1 py-3.5">
+        <div key={label} data-rv="zoom" className="overflow-hidden rounded-[10px] border border-emas-muda/50 bg-[rgba(10,22,44,0.4)] px-1 py-3.5">
           <div key={v} className="animate-tick font-serif text-4xl font-semibold leading-none">{v}</div>
           <div className="mt-1.5 text-[11px] tracking-[0.1em] text-emas-muda">{label}</div>
         </div>
@@ -257,53 +254,11 @@ export function SalinAlamat() {
         navigator.clipboard?.writeText("Kediaman Mempelai Wanita, Kec. Sagalaherang, Kab. Subang, Jawa Barat").catch(() => {});
         setCopied(true);
       }}
-      className="inline-flex min-h-[46px] cursor-pointer items-center gap-2 rounded-full border border-hijau-tua bg-transparent px-5 font-sans text-[13px] text-hijau-tua"
+      className="inline-flex min-h-[46px] cursor-pointer items-center gap-2 rounded-full border border-biru-tua bg-transparent px-5 font-sans text-[13px] text-biru-tua"
     >
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2" /><path d="M5 15V5a2 2 0 0 1 2-2h10" /></svg>
       <span aria-live="polite">{copied ? "Tersalin" : "Salin Alamat"}</span>
     </button>
-  );
-}
-
-const FOTO = [couple1, couple2];
-
-export function Galeri() {
-  const [lb, setLb] = useState(-1);
-  // kunci scroll halaman di belakang selama foto diperbesar
-  useEffect(() => {
-    if (lb < 0) return;
-    document.documentElement.style.overflow = "hidden";
-    return () => void (document.documentElement.style.overflow = "");
-  }, [lb]);
-
-  return (
-    <>
-      <div data-stagger className="flex w-full flex-col gap-3">
-        {FOTO.map((src, i) => (
-          <button key={i} type="button" onClick={() => setLb(i)} aria-label={`Perbesar foto ${i + 1}`} data-rv="zoom" className="group relative block h-[220px] w-full cursor-zoom-in overflow-hidden rounded-[14px] border-0 bg-transparent p-0">
-            <Image src={src} alt="" fill sizes="432px" className="object-cover transition-transform duration-700 group-hover:scale-105" />
-          </button>
-        ))}
-      </div>
-      {/* portal ke <body>: elemen induk yang punya animasi transform membuat `fixed` ikut induk, bukan layar */}
-      {lb >= 0 &&
-        createPortal(
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label="Foto diperbesar"
-          onKeyDown={(e) => e.key === "Escape" && setLb(-1)}
-          onClick={(e) => e.target === e.currentTarget && setLb(-1)}
-          className="fixed inset-0 z-50 box-border flex flex-col items-center justify-center gap-4 bg-[rgba(10,18,14,0.92)] p-6"
-        >
-          <Image src={FOTO[lb]} alt="Foto Gea dan Maldini" className="block h-auto max-h-[78vh] w-auto max-w-full rounded-xl" />
-          <button type="button" autoFocus onClick={() => setLb(-1)} className="min-h-[46px] cursor-pointer rounded-full border border-emas-muda bg-transparent px-[26px] font-sans text-sm text-krem">
-            Tutup
-          </button>
-        </div>,
-          document.body,
-        )}
-    </>
   );
 }
 
@@ -365,7 +320,7 @@ export function Rsvp({ initial }: { initial: Wish[] }) {
                   role="radio"
                   aria-checked={on}
                   onClick={() => setHadir(label)}
-                  className={`min-h-11 cursor-pointer rounded-[10px] border px-1.5 font-sans text-[13px] ${on ? "border-hijau-tua bg-hijau-tua text-krem" : "border-input bg-white text-teks-2"}`}
+                  className={`min-h-11 cursor-pointer rounded-[10px] border px-1.5 font-sans text-[13px] ${on ? "border-biru-tua bg-biru-tua text-krem" : "border-input bg-white text-teks-2"}`}
                 >
                   {label}
                 </button>
@@ -384,10 +339,10 @@ export function Rsvp({ initial }: { initial: Wish[] }) {
           <textarea rows={4} value={ucapan} onChange={(e) => setUcapan(e.target.value)} placeholder="Tulis ucapan untuk kedua mempelai" maxLength={MAX_UCAPAN} className={`${field} resize-y px-3.5 py-3`} />
         </label>
         {err && <p role="alert" className="-mt-1 mb-0 text-xs text-[#9B2C1F]">{err}</p>}
-        <button type="submit" disabled={pending} className="min-h-12 cursor-pointer rounded-full border-0 bg-hijau-tua font-sans text-sm tracking-[0.08em] text-krem disabled:cursor-wait disabled:opacity-70">
+        <button type="submit" disabled={pending} className="min-h-12 cursor-pointer rounded-full border-0 bg-biru-tua font-sans text-sm tracking-[0.08em] text-krem disabled:cursor-wait disabled:opacity-70">
           {pending ? "Mengirim…" : "Kirim Ucapan"}
         </button>
-        {terkirim && <p role="status" className="m-0 text-center text-[13px] text-[#2F6B3E]">Hatur nuhun, ucapan Anda sudah terkirim.</p>}
+        {terkirim && <p role="status" className="m-0 text-center text-[13px] text-[#2F6B3E]">Terima kasih, ucapan Anda sudah terkirim.</p>}
       </form>
 
       <div className="flex w-full flex-col gap-2.5">
@@ -400,7 +355,7 @@ export function Rsvp({ initial }: { initial: Wish[] }) {
             <div className="flex items-center justify-between gap-2">
               {/* semua isi ucapan dirender sebagai teks biasa (React meng-escape HTML) — jangan pakai dangerouslySetInnerHTML */}
               <strong className="min-w-0 break-words text-sm font-medium text-teks">{w.nama}</strong>
-              <span className="shrink-0 rounded-full bg-krem-tua px-2.5 py-[3px] text-[11px] text-hijau-tua">
+              <span className="shrink-0 rounded-full bg-krem-tua px-2.5 py-[3px] text-[11px] text-biru-tua">
                 {w.kehadiran}{w.kehadiran === "Hadir" ? ` · ${w.jumlah} orang` : ""}
               </span>
             </div>
@@ -408,7 +363,7 @@ export function Rsvp({ initial }: { initial: Wish[] }) {
           </div>
         ))}
         {wishes.length > 5 && (
-          <button type="button" onClick={() => setSemua(!semua)} aria-expanded={semua} className="mx-auto mt-1 min-h-11 cursor-pointer rounded-full border border-hijau-tua bg-transparent px-6 font-sans text-[13px] tracking-[0.06em] text-hijau-tua">
+          <button type="button" onClick={() => setSemua(!semua)} aria-expanded={semua} className="mx-auto mt-1 min-h-11 cursor-pointer rounded-full border border-biru-tua bg-transparent px-6 font-sans text-[13px] tracking-[0.06em] text-biru-tua">
             {semua ? "Tampilkan lebih sedikit" : `Lihat semua ucapan (${wishes.length})`}
           </button>
         )}

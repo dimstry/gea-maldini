@@ -7,4 +7,4 @@ export type Wish = { id: string; nama: string; kehadiran: Kehadiran; jumlah: num
 
 export const MAX_NAMA = 80;
 export const MAX_UCAPAN = 500;
-export const UCAPAN_DEFAULT = "Wilujeng nikah, mugia janten kulawarga anu sakinah, mawaddah, warahmah.";
+export const UCAPAN_DEFAULT = "Selamat menempuh hidup baru, semoga menjadi keluarga yang sakinah, mawaddah, warahmah.";

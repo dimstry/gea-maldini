@@ -16,7 +16,7 @@ export default async function OgImage() {
           alignItems: "center",
           justifyContent: "center",
           gap: 80,
-          background: "#1F3A30",
+          background: "#1B3358",
           backgroundImage: megaBg,
           backgroundSize: "120px 70px",
           backgroundRepeat: "repeat",
