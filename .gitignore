@@ -1,0 +1,10 @@
+node_modules
+.next
+.env*
+!.env.example
+next-env.d.ts
+.vercel
+*.tsbuildinfo
+.DS_Store
+# referensi proyek lain (repo git sendiri)
+dewi-andri/

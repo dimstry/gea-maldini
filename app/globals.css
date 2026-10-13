@@ -1,0 +1,60 @@
+@import "tailwindcss";
+@source not "../dewi-andri";
+
+@theme inline {
+  --color-hijau-tua: #1f3a30;
+  --color-hijau-gelap: #16291f;
+  --color-emas: #c8a24e;
+  --color-emas-muda: #e6cb86;
+  --color-krem: #f4eee3;
+  --color-krem-tua: #eae1cf;
+  --color-teks: #24301f;
+  --color-teks-2: #2e3a28;
+  --color-coklat-emas: #7a5a1e;
+  --color-rose: #8a4e5e;
+  --color-garis: #d6c59c;
+  --color-input: #c2b38e;
+  --color-redup: #5e5a48;
+
+  --font-serif: var(--font-cormorant), serif;
+  --font-script: var(--font-parisienne), cursive;
+  --font-sans: var(--font-jost), system-ui, sans-serif;
+
+  --animate-drift: drift 9s ease-in-out infinite;
+  --animate-drift2: drift 11s ease-in-out infinite reverse;
+  --animate-rise: rise 1.1s ease-out both;
+  --animate-glow: glow 4s ease-in-out infinite;
+  --animate-cover-out: cover-out 0.8s ease-in forwards;
+}
+
+@keyframes drift { 0%, 100% { transform: translateX(-6px) } 50% { transform: translateX(6px) } }
+@keyframes rise { from { opacity: 0; transform: translateY(14px) } to { opacity: 1; transform: none } }
+@keyframes cover-out { to { opacity: 0; transform: scale(1.06) } }
+@keyframes glow { 0%, 100% { opacity: .75 } 50% { opacity: 1 } }
+
+@layer base {
+  html { scroll-behavior: smooth }
+  body { margin: 0; background: #16291f }
+  a { color: #7a5a1e }
+  a:hover { color: #4f3a12 }
+  input:focus, textarea:focus, select:focus { outline: 2px solid #c8a24e; outline-offset: 1px }
+  button:focus-visible, a:focus-visible { outline: 2px solid #e6cb86; outline-offset: 3px }
+}
+
+/* Sampul muat satu layar di HP / layar pendek */
+@media (max-height: 840px) { .cover-isi { zoom: .9 } }
+@media (max-height: 720px) { .cover-isi { zoom: .78 } }
+
+/* Konten muncul halus saat di-scroll (CSS scroll-driven; browser lama tampil statis) */
+@supports (animation-timeline: view()) {
+  .isi section > :not(svg, [role="dialog"]) {
+    animation: rise linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 45%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto }
+  *, *::before, *::after { animation: none !important; transition: none !important }
+}
